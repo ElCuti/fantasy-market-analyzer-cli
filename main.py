@@ -16,11 +16,12 @@ priceBuy = {
     "le-normand": 40123156,
     "david-soria": 21012345,
     "exposito": 3661823,
-    "sannadi": 1850123
-
+    "sannadi": 1850123,
+    #"lukebakio": 59123456,
+    "samu-costa": 4370119,
 }
 
-listPlayer = ["le-normand", "david-soria", "exposito", "sannadi"]
+listPlayer = ["le-normand", "david-soria", "exposito", "sannadi", "samu-costa"]
 
 session = HTMLSession()
 
@@ -53,15 +54,30 @@ def analizeTeam():
         playerInfo = extractDataPlayers(a)
         cleanInfo(playerInfo)
 
+def dayWorthIt(playerInfo):
+    toPay = playerInfo["priceToBuy"] - playerInfo["actualPrice"]
+    daysToWorthIt = round(toPay/playerInfo["pricePerDay"], 0)
+    return daysToWorthIt
+
 def cleanInfo(playerInfo):
     result = playerInfo["actualPrice"] - playerInfo["priceToBuy"]
+    result = ("{:,}".format(result))
+    result = result.replace(",", ".")
     x = ("""Jugador: {}
     Precio de compra: {:,}
     Precio Actual: {:,}
-    Has {}: {:,}
-    Ha {} hoy: {:,}""".format(playerInfo["name"], playerInfo["priceToBuy"], playerInfo["actualPrice"], "ganado" if playerInfo["actualPrice"]>=playerInfo["priceToBuy"] else "perdido", abs(result), "subido" if playerInfo["typeChange"] == "+" else "bajado", playerInfo["pricePerDay"]))
+    Has {}: {}
+    Ha {} hoy: {:,}""".format(playerInfo["name"], playerInfo["priceToBuy"], playerInfo["actualPrice"], "ganado" if playerInfo["actualPrice"]>=playerInfo["priceToBuy"] else "perdido", result, "subido" if playerInfo["typeChange"] == "+" else "bajado", playerInfo["pricePerDay"]))
     xy = x.replace(",",".")
+
     print(xy)
+    daysToWorthIt = dayWorthIt(playerInfo)
+    if daysToWorthIt > 0 and playerInfo["typeChange"] == "+":
+        print("- Para recuperar la inversión por este jugador deben de pasar {} dias con la rentabilidad de hoy".format(daysToWorthIt))
+    elif daysToWorthIt > 0 and playerInfo["typeChange"] != "+":
+        print("- Este jugador no esta ganando valor y esta por debajo del precio de compra, diferencia entre lo que pagaste y lo que vale: {}". format(result))
+    else:
+        print("- ¡Este jugador ya vale mas de lo que pagaste por el! Beneficio: {}".format(result))
     sleep(1)
 
 def main():
