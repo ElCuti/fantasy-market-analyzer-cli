@@ -1,4 +1,6 @@
 import copy
+from time import sleep
+
 from requests_html import HTMLSession
 
 #Diccionario basico de datos del jugador
@@ -6,13 +8,21 @@ basicDataPlayer={
     "name": "",
     "actualPrice": 0,
     "pricePerDay": 0,
+    "priceToBuy": 0,
+    "typeChange": "",
 }
-session = HTMLSession()
 
-def leNormand():
-    urlLeNormand = "https://www.jornadaperfecta.com/jugador/le-normand?hideHeader=true"
-    priceBuy = 40123156
-    return urlLeNormand, priceBuy
+priceBuy = {
+    "le-normand": 40123156,
+    "david-soria": 21012345,
+    "exposito": 3661823,
+    "sannadi": 1850123
+
+}
+
+listPlayer = ["le-normand", "david-soria", "exposito", "sannadi"]
+
+session = HTMLSession()
 
 def fechPlayerPrice(playerID):
     URLPLAYER = "https://www.jornadaperfecta.com/jugador/"+ playerID +"?hideHeader=true"
@@ -23,17 +33,40 @@ def fechPlayerPrice(playerID):
     priceChange = fantasyPage.html.find(
         ".player-page div.column-mobile-jp.center.mt-12 div.ai-top div.row-jp.space-between:nth-child(1) div.column-jp.center.card:nth-child(2) div.row-jp span:nth-child(2)",
         first=True).text
-    return actualPrice, priceChange
+    typeChange = fantasyPage.html.find(
+        ".player-page div.column-mobile-jp.center.mt-12 div.ai-top div.row-jp.space-between:nth-child(1) div.column-jp.center.card:nth-child(2) div.row-jp span:nth-child(1)",
+        first=True).text
+    return actualPrice, priceChange, typeChange
 
-def extractDataPlayers():
-    leNormandData = copy.deepcopy(basicDataPlayer)
-    leNormand = fechPlayerPrice("le-normand")
-    davidSoria = fechPlayerPrice("david-soria")
+def extractDataPlayers(playerID):
+    playerData = copy.deepcopy(basicDataPlayer)
+    actualPrice, incrementPrice, typeChange = fechPlayerPrice(playerID)
+    playerData["actualPrice"] = int(actualPrice.replace(".", "").replace("€", ""))
+    playerData["pricePerDay"] = int(incrementPrice.replace(".", "").replace("€", ""))
+    playerData["priceToBuy"] = priceBuy[playerID]
+    playerData["name"] = playerID
+    playerData["typeChange"] = typeChange
+    return playerData
 
+def analizeTeam():
+    for a in listPlayer:
+        playerInfo = extractDataPlayers(a)
+        cleanInfo(playerInfo)
 
+def cleanInfo(playerInfo):
+    result = playerInfo["actualPrice"] - playerInfo["priceToBuy"]
+    x = ("""Jugador: {}
+    Precio de compra: {:,}
+    Precio Actual: {:,}
+    Has {}: {:,}
+    Ha {} hoy: {:,}""".format(playerInfo["name"], playerInfo["priceToBuy"], playerInfo["actualPrice"], "ganado" if playerInfo["actualPrice"]>=playerInfo["priceToBuy"] else "perdido", abs(result), "subido" if playerInfo["typeChange"] == "+" else "bajado", playerInfo["pricePerDay"]))
+    xy = x.replace(",",".")
+    print(xy)
+    sleep(1)
 
 def main():
-    extractDataPlayers()
+    analizeTeam()
+    input("Pulse enter para salir")
 
 if __name__ == "__main__":
     main()
