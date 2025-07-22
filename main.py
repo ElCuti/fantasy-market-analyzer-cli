@@ -10,20 +10,26 @@ basicDataPlayer={
 session = HTMLSession()
 
 def leNormand():
-    urlLeNormand = "https://www.jornadaperfecta.com/jugador-min/raphinha?hideHeader=true"
+    urlLeNormand = "https://www.jornadaperfecta.com/jugador/le-normand?hideHeader=true"
     priceBuy = 40123156
     return urlLeNormand, priceBuy
 
+def fechPlayerPrice(playerID):
+    URLPLAYER = "https://www.jornadaperfecta.com/jugador/"+ playerID +"?hideHeader=true"
+    fantasyPage = session.get(URLPLAYER)
+    actualPrice = fantasyPage.html.find(
+        " div.column-jp.full-width.center.p-8.card.fixed-prices.market-container > div:nth-child(1) > div.row-jp > div ",
+        first=False)[1].text
+    priceChange = fantasyPage.html.find(
+        ".player-page div.column-mobile-jp.center.mt-12 div.ai-top div.row-jp.space-between:nth-child(1) div.column-jp.center.card:nth-child(2) div.row-jp span:nth-child(2)",
+        first=True).text
+    return actualPrice, priceChange
 
 def extractDataPlayers():
     leNormandData = copy.deepcopy(basicDataPlayer)
-    urlLeNormand, priceBuy = leNormand()
-    fantasyPage = session.get(urlLeNormand)
-    #leNormandData["name"] = fantasyPage.html.find(".info-right", first=True).text
-    webPage1 = fantasyPage.html.find(" div.column-jp.full-width.center.p-8.card.fixed-prices.market-container > div:nth-child(1) > div.row-jp > div ", first=False)[1].text
-    leNormandData["actualPrice"] = fantasyPage.html.find(".MuiTypography-root.MuiTypography-body1", first=False)[1].text
-    print(leNormandData["name"])
-    print(webPage1)
+    leNormand = fechPlayerPrice("le-normand")
+    davidSoria = fechPlayerPrice("david-soria")
+
 
 
 def main():
