@@ -27,6 +27,7 @@ priceBuy = {
 listPlayer = ["le-normand", "david-soria", "exposito", "sannadi", "lukebakio", "samu-costa", "arda-guler", "giuliano-simeone", "johnny"]
 
 lostAndWin= []
+lostAndWinDay= []
 
 session = HTMLSession()
 
@@ -58,7 +59,9 @@ def analizeTeam():
     for a in listPlayer:
         playerInfo = extractDataPlayers(a)
         cleanInfo(playerInfo)
+        sleep(1)
     totalResult()
+    dayResult()
 
 def dayWorthIt(playerInfo):
     toPay = playerInfo["priceToBuy"] - playerInfo["actualPrice"]
@@ -68,6 +71,10 @@ def dayWorthIt(playerInfo):
 def cleanInfo(playerInfo):
     result = playerInfo["actualPrice"] - playerInfo["priceToBuy"]
     lostAndWin.append(result)
+    if playerInfo["typeChange"] == "+":
+        lostAndWinDay.append(playerInfo["pricePerDay"])
+    elif playerInfo["typeChange"] != "+":
+        lostAndWinDay.append(playerInfo["pricePerDay"]*-1)
     result = ("{:,}".format(result))
     result = result.replace(",", ".")
     x = ("""Jugador: {}
@@ -93,6 +100,15 @@ def totalResult():
     x = ("Tu inversión actual lleva un rendimiento {} de {:,}€".format("positivo" if profitPlayer1>=0 else "negativo", profitPlayer1))
     xy = x.replace(",", ".")
     print(xy)
+
+def dayResult():
+    profitDay1= 0
+    for profitDay in lostAndWinDay:
+        profitDay1 += profitDay
+    x = ("Tu inversión HOY lleva un rendimiento {} de {:,}€".format("positivo" if profitDay1 >= 0 else "negativo", profitDay1))
+    xy = x.replace(",", ".")
+    print(xy)
+
 
 def main():
     analizeTeam()
