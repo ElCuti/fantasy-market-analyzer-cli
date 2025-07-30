@@ -24,6 +24,10 @@ priceBuy = {
     "johnny": 19217330,
 }
 
+priceSell = {
+    "le-normand": 37767245,
+}
+
 listPlayer = ["le-normand", "david-soria", "exposito", "sannadi", "lukebakio", "samu-costa", "arda-guler", "giuliano-simeone", "johnny"]
 
 lostAndWin= []
@@ -58,8 +62,17 @@ def extractDataPlayers(playerID):
 def analizeTeam():
     for a in listPlayer:
         playerInfo = extractDataPlayers(a)
-        cleanInfo(playerInfo)
-        sleep(1)
+        if playerInfo["name"] in priceSell:
+            result = priceSell[a] - priceBuy[a]
+            print("")
+            print("{} ya ha sido vendido con {} de {}".format(playerInfo["name"], "beneficios" if result >= 0 else "perdidas", result))
+            print("")
+            print("")
+            sleep(1)
+            lostAndWin.append(result)
+        else:
+            cleanInfo(playerInfo)
+            sleep(1)
     totalResult()
     dayResult()
 
@@ -92,6 +105,9 @@ def cleanInfo(playerInfo):
         print("- Este jugador no esta ganando valor y esta por debajo del precio de compra, diferencia entre lo que pagaste y lo que vale: {}". format(result))
     else:
         print("- ¡Este jugador ya vale mas de lo que pagaste por el! Beneficio: {}".format(result))
+
+    print("")
+    print("")
 
 def totalResult():
     profitPlayer1 = 0
