@@ -1,4 +1,5 @@
 import copy
+from math import trunc
 from time import sleep
 
 from requests_html import HTMLSession
@@ -22,13 +23,15 @@ priceBuy = {
     "arda-guler": 58512345,
     "giuliano-simeone": 23486593,
     "johnny": 19217330,
+    "julian-alvarez": 91823451,
+    "moussa-diarra": 1645690
 }
 
 priceSell = {
     "le-normand": 37767245,
 }
 
-listPlayer = ["le-normand", "david-soria", "exposito", "sannadi", "lukebakio", "samu-costa", "arda-guler", "giuliano-simeone", "johnny"]
+listPlayer = ["le-normand", "david-soria", "exposito", "sannadi", "lukebakio", "samu-costa", "arda-guler", "giuliano-simeone", "johnny", "julian-alvarez", "moussa-diarra"]
 
 lostAndWin= []
 lostAndWinDay= []
@@ -65,7 +68,7 @@ def analizeTeam():
         if playerInfo["name"] in priceSell:
             result = priceSell[a] - priceBuy[a]
             print("")
-            print("{} ya ha sido vendido con {} de {}".format(playerInfo["name"], "beneficios" if result >= 0 else "perdidas", result))
+            print("{} ya ha sido vendido con {} de {:,}".format(playerInfo["name"], "beneficios" if result >= 0 else "perdidas", result))
             print("")
             print("")
             sleep(1)
@@ -73,8 +76,9 @@ def analizeTeam():
         else:
             cleanInfo(playerInfo)
             sleep(1)
-    totalResult()
-    dayResult()
+    profitPlayer1 = totalResult()
+    profitDay1 = dayResult()
+    daysToRentability(profitPlayer1, profitDay1)
 
 def dayWorthIt(playerInfo):
     toPay = playerInfo["priceToBuy"] - playerInfo["actualPrice"]
@@ -116,6 +120,7 @@ def totalResult():
     x = ("Tu inversión actual lleva un rendimiento {} de {:,}€".format("positivo" if profitPlayer1>=0 else "negativo", profitPlayer1))
     xy = x.replace(",", ".")
     print(xy)
+    return profitPlayer1
 
 def dayResult():
     profitDay1= 0
@@ -124,6 +129,19 @@ def dayResult():
     x = ("Tu inversión HOY lleva un rendimiento {} de {:,}€".format("positivo" if profitDay1 >= 0 else "negativo", profitDay1))
     xy = x.replace(",", ".")
     print(xy)
+    return profitDay1
+
+def daysToRentability(profitPlayer1, profitDay1):
+    if profitPlayer1 <0:
+        profitPlayer2= (profitPlayer1 * -1)
+    daysRentability = round(profitPlayer2/profitDay1, 0)
+    if profitPlayer1 >= 0:
+        print("Tu inversión ya ha sido rentabilizada, tus ganancias son de {:,}".format(profitPlayer1))
+    elif profitDay1 > 0 and profitPlayer1 < 0:
+        print("Para rentabilizar tu inversión en total deben de pasar {:,} dias con tu rentabilidad diaria".format(daysRentability))
+    else:
+        print("¡Tu inversión total esta en negativo y tambien estas teniendo perdidas diariamente! Tus perdidas son de: {:,} y diariamente pierdes: {:,}".format(profitPlayer1, profitDay1))
+
 
 
 def main():
