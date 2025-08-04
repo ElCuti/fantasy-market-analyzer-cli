@@ -23,15 +23,19 @@ priceBuy = {
     "arda-guler": 58512345,
     "giuliano-simeone": 23486593,
     "johnny": 19217330,
+    "moussa-diarra": 1645690,
     "julian-alvarez": 91823451,
-    "moussa-diarra": 1645690
+    "cristian-rivero": 1030285,
+    "alhassane": 2384625,
 }
 
 priceSell = {
     "le-normand": 37767245,
+    "exposito": 3661823,
+    "sannadi": 1850123,
 }
 
-listPlayer = ["le-normand", "david-soria", "exposito", "sannadi", "lukebakio", "samu-costa", "arda-guler", "giuliano-simeone", "johnny", "julian-alvarez", "moussa-diarra"]
+listPlayer = ["le-normand", "david-soria", "exposito", "sannadi", "lukebakio", "samu-costa", "arda-guler", "giuliano-simeone", "johnny", "julian-alvarez", "cristian-rivero", "alhassane"]
 
 lostAndWin= []
 lostAndWinDay= []
@@ -68,7 +72,7 @@ def analizeTeam():
         if playerInfo["name"] in priceSell:
             result = priceSell[a] - priceBuy[a]
             print("")
-            print("{} ya ha sido vendido con {} de {:,}".format(playerInfo["name"], "beneficios" if result >= 0 else "perdidas", result))
+            print("{} ya ha sido vendido con {} de {}".format(playerInfo["name"], "beneficios" if result >= 0 else "perdidas", result))
             print("")
             print("")
             sleep(1)
@@ -76,9 +80,8 @@ def analizeTeam():
         else:
             cleanInfo(playerInfo)
             sleep(1)
-    profitPlayer1 = totalResult()
-    profitDay1 = dayResult()
-    daysToRentability(profitPlayer1, profitDay1)
+    totalResult()
+    dayResult()
 
 def dayWorthIt(playerInfo):
     toPay = playerInfo["priceToBuy"] - playerInfo["actualPrice"]
@@ -103,9 +106,9 @@ def cleanInfo(playerInfo):
 
     print(xy)
     daysToWorthIt = dayWorthIt(playerInfo)
-    if daysToWorthIt > 0 and playerInfo["typeChange"] == "+":
+    if  playerInfo["priceToBuy"] > playerInfo["actualPrice"] and playerInfo["typeChange"] == "+":
         print("- Para recuperar la inversión por este jugador deben de pasar {} dias con la rentabilidad de hoy".format(daysToWorthIt))
-    elif daysToWorthIt > 0 and playerInfo["typeChange"] != "+":
+    elif playerInfo["priceToBuy"] > playerInfo["actualPrice"] != "+":
         print("- Este jugador no esta ganando valor y esta por debajo del precio de compra, diferencia entre lo que pagaste y lo que vale: {}". format(result))
     else:
         print("- ¡Este jugador ya vale mas de lo que pagaste por el! Beneficio: {}".format(result))
