@@ -23,6 +23,9 @@ PRICE_BUY = {
     "julian-alvarez": 91823451,
     "cristian-rivero": 1030285,
     "alhassane": 2384625,
+    "natan": 15546546,
+    "areso": 10201231,
+    "ivan-romero": 780792
 }
 
 #Precio de venta del jugador
@@ -30,12 +33,14 @@ PRICE_SELL = {
     "le-normand": 37767245,
     "exposito": 3661823,
     "sannadi": 1850123,
+    "lukebakio": 59285799,
+    "david-soria": 24124036,
 }
 
 #Nombre de los jugadores presentes (Ya sea en compra o en venta)
 PLAYERS_LIST = ["le-normand", "david-soria", "exposito", "sannadi", "lukebakio",
                 "samu-costa", "arda-guler", "giuliano-simeone", "johnny", "julian-alvarez",
-                "cristian-rivero", "alhassane"]
+                "cristian-rivero", "alhassane", "natan", "areso", "ivan-romero"]
 
 #Lista con resultados TOTALES ("En total has perdido 800.000 € con este jugador") de cada jugador al momento de ejecutar el programa
 LOST_AND_WIN= []

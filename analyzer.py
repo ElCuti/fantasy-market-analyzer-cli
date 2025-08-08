@@ -13,7 +13,7 @@ def analizeTeam():
         if playerInfo["name"] in PRICE_SELL: #Si el jugador ya está vendido
             result = PRICE_SELL[a] - PRICE_BUY[a] # comprobamos si ha dejado beneficios o perdidas
             print("")
-            print("{} ya ha sido vendido con {} de {}".format(playerInfo["name"], "beneficios" if result >= 0 else "perdidas", result)) #Y se lo enseñamos al user
+            print("{} ya ha sido vendido con {} de {:,}".format(playerInfo["name"], "beneficios" if result >= 0 else "perdidas", result)) #Y se lo enseñamos al user
             print("")
             print("")
             sleep(1)
